@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Changestor</title>
+    <style>
+        /* Estilo general y suave para toda la página */
+        .logo {
+            width: 50px; /* Cambia este valor para ajustar el ancho */
+            height: auto; /* Mantiene la proporción */
+            vertical-align: middle; /* Alinea el logo verticalmente con el texto */
+            margin-right: 5px; /* Espacio entre el logo y el texto */
+        }
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #efffe7;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 20px auto;
+            background-color: #fbffe7;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            border-radius: 15px;
+        }
+
+        h2, h3, h4 {
+            color: #7b9e5c;
+            font-weight: bold;
+        }
+
+        /* Estilo para pestañas */
+        .tab {
+            overflow: hidden;
+            border-bottom: 2px solid #dddddd;
+        }
+
+        .tab button {
+            background-color: #c3d18a;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            transition: 0.3s;
+            font-size: 16px;
+            border-radius: 10px 10px 0 0;
+            margin-right: 10px;
+        }
+
+        .tab button:hover {
+            background-color: #c3d18a;
+        }
+
+        .tab button.active {
+            background-color: #9fab6f;
+            color: white;
+        }
+
+        /* Estilo para el contenido de las pestañas */
+        .tabcontent {
+            display: none;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+            margin-top: -10px;
+        }
+
+        /* Estilo de tabla */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        table th, table td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: center;
+        }
+
+        table th {
+            background-color: #c3d18a;
+            color: white;
+        }
+
+        table td {
+            background-color: #ffffff;
+        }
+
+        /* Estilo de los botones generales */
+        button {
+            background-color: #9fab6f;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #889260;
+        }
+
+        /* Botón de limpiar datos específico */
+        #limpiarDatosInformeBtn, #limpiarDatosReportesBtn {
+            background-color: #dd7274;
+        }
+
+        #limpiarDatosInformeBtn:hover, #limpiarDatosReportesBtn:hover {
+            background-color: #b15d5e;
+        }
+
+        /* Botón para reestablecer todos los datos */
+        #reestablecerBtn {
+            position: absolute;
+            top: 40px;
+            right: 85px;
+            background-color: #dd7274;
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        #reestablecerBtn:hover {
+            background-color: #b15d5e;
+        }
+
+        /* Formulario de facturación */
+        .facturacion {
+            display: flex;
+            gap: 10px;
+        }
+
+        .facturacion input {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        /* Gráfico */
+        #chartContainer {
+            background-color: #f1f8d4;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 10px;
+            border: 1px solid #747c53;
+        }
+
+        /* Caja de reportes */
+        .reporte {
+            background-color: #e5f5a4;
+            padding: 10px;
+            border-radius: 10px;
+            margin-top: 20px;
+            border: 1px solid #747c53;
+        }
+
+        /* Contenedor de acción de botones */
+        .action-buttons {
+            margin: 20px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2> 
+        <img src="favicon.ico" alt="Logo" class="logo">
+        Changestor
+    </h2>
+
+    <!-- Botón para reestablecer todos los datos -->
+    <button id="reestablecerBtn" onclick="reestablecerDatos()">Reestablecer Datos</button>
+
+    <!-- Pestañas de navegación -->
+    <div class="tab">
+        <button class="tablinks" onclick="openTab(event, 'Informe')" id="defaultOpen">Informe de Ventas</button>
+        <button class="tablinks" onclick="openTab(event, 'Facturacion')">Añadir Facturación</button>
+        <button class="tablinks" onclick="openTab(event, 'Reportes')">Generar Reportes</button>
+        <button class="tablinks" onclick="openTab(event, 'Graficos')">Gráficos</button>
+    </div>
+
+    <!-- Contenido de la pestaña Informe -->
+    <div id="Informe" class="tabcontent">
+        <h3>Informe de Ventas</h3>
+
+        <table id="ventasTable">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad Vendida</th>
+                    <th>Precio Unitario</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Las filas se cargarán dinámicamente -->
+            </tbody>
+        </table>
+
+        <p><strong>Total General:</strong> $<span id="totalGeneral">0.00</span></p>
+
+        <button id="limpiarDatosInformeBtn" onclick="limpiarDatosInforme()">Limpiar Datos</button>
+    </div>
+
+    <!-- Contenido de la pestaña Añadir Facturación -->
+    <div id="Facturacion" class="tabcontent">
+        <h3>Añadir Facturación</h3>
+        <div class="facturacion">
+            <input type="text" id="producto" placeholder="Nombre del Producto" required />
+            <input type="number" id="cantidad" placeholder="Cantidad Vendida" required />
+            <input type="number" id="precio" placeholder="Precio Unitario" required />
+            <button onclick="agregarFactura()">Guardar Datos</button>
+        </div>
+    </div>
+
+    <!-- Contenido de la pestaña Generar Reportes -->
+    <div id="Reportes" class="tabcontent">
+        <h3>Generar Reportes</h3>
+        <div class="action-buttons">
+            <button id="generarReporteBtn" onclick="generarReporte()">Generar Reporte</button>
+            <button id="limpiarDatosReportesBtn" onclick="limpiarDatosReportes()">Limpiar Reportes</button>
+        </div>
+        <div class="reportes-container" id="reportesContainer">
+            <!-- Los reportes generados aparecerán aquí -->
+        </div>
+    </div>
+
+    <!-- Contenido de la pestaña Gráficos -->
+    <div id="Graficos" class="tabcontent">
+        <h3>Gráfico de Ventas</h3>
+        <div id="chartContainer">
+            <canvas id="ventasChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Función para mostrar la pestaña seleccionada
+    function openTab(evt, tabName) {
+        const tabcontent = document.getElementsByClassName("tabcontent");
+        for (let i = 0; i < tabcontent.length; i++) {
+            tabcontent[i].style.display = "none";
+        }
+        const tablinks = document.getElementsByClassName("tablinks");
+        for (let i = 0; i < tablinks.length; i++) {
+            tablinks[i].className = tablinks[i].className.replace(" active", "");
+        }
+        document.getElementById(tabName).style.display = "block";
+        evt.currentTarget.className += " active";
+    }
+
+    // Abrir la pestaña por defecto
+    document.getElementById("defaultOpen").click();
+
+    // Función para agregar facturas
+    function agregarFactura() {
+        const producto = document.getElementById('producto').value;
+        const cantidad = parseInt(document.getElementById('cantidad').value);
+        const precio = parseFloat(document.getElementById('precio').value);
+        const total = (cantidad * precio).toFixed(2);
+
+        if (!producto || isNaN(cantidad) || isNaN(precio)) {
+            alert('Por favor, completa todos los campos.');
+            return;
+        }
+
+        const factura = { producto, cantidad, precio, total };
+        let facturas = JSON.parse(localStorage.getItem('facturas')) || [];
+        facturas.push(factura);
+        localStorage.setItem('facturas', JSON.stringify(facturas));
+
+        cargarFacturas();
+        document.getElementById('producto').value = '';
+        document.getElementById('cantidad').value = '';
+        document.getElementById('precio').value = '';
+    }
+
+    // Cargar las facturas en la tabla
+    function cargarFacturas() {
+        const facturas = JSON.parse(localStorage.getItem('facturas')) || [];
+        const ventasTableBody = document.querySelector('#ventasTable tbody');
+        ventasTableBody.innerHTML = '';
+
+        let totalGeneral = 0;
+
+        facturas.forEach(factura => {
+            const row = `
+                <tr>
+                    <td>${factura.producto}</td>
+                    <td>${factura.cantidad}</td>
+                    <td>$${factura.precio.toFixed(2)}</td>
+                    <td>$${factura.total}</td>
+                </tr>
+            `;
+            ventasTableBody.insertAdjacentHTML('beforeend', row);
+            totalGeneral += parseFloat(factura.total);
+        });
+
+        document.getElementById('totalGeneral').innerText = totalGeneral.toFixed(2);
+    }
+
+    // Limpiar datos de facturación (Informe)
+    function limpiarDatosInforme() {
+        localStorage.removeItem('facturas');
+        cargarFacturas();
+    }
+
+    // Generar un reporte y guardarlo en localStorage
+    function generarReporte() {
+        const facturas = JSON.parse(localStorage.getItem('facturas')) || [];
+        const totalGeneral = document.getElementById('totalGeneral').textContent;
+
+        if (facturas.length === 0) {
+            alert("No hay datos para generar el reporte.");
+            return;
+        }
+
+        const reporteDiv = document.createElement('div');
+        reporteDiv.className = 'reporte';
+        const fecha = new Date().toLocaleString();
+        reporteDiv.innerHTML = `
+            <h4>Reporte generado el: ${fecha}</h4>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cantidad Vendida</th>
+                        <th>Precio Unitario</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${facturas.map(factura => `
+                        <tr>
+                            <td>${factura.producto}</td>
+                            <td>${factura.cantidad}</td>
+                            <td>$${factura.precio.toFixed(2)}</td>
+                            <td>$${factura.total}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+            <p><strong>Total General:</strong> $${totalGeneral}</p>
+        `;
+
+        // Guardar el reporte en localStorage
+        let reportesGuardados = JSON.parse(localStorage.getItem('reportes')) || [];
+        reportesGuardados.push(reporteDiv.innerHTML);
+        localStorage.setItem('reportes', JSON.stringify(reportesGuardados));
+
+        document.getElementById('reportesContainer').appendChild(reporteDiv);
+    }
+    
+    function limpiarDatosReportes() {
+        document.getElementById('reportesContainer').innerHTML = '';
+        document.getElementById('totalGeneralReportes').innerText = '0.00';
+    }
+
+    // Cargar reportes guardados al iniciar la página
+    function cargarReportes() {
+        const reportesGuardados = JSON.parse(localStorage.getItem('reportes')) || [];
+        reportesGuardados.forEach(reporteHTML => {
+            const reporteDiv = document.createElement('div');
+            reporteDiv.className = 'reporte';
+            reporteDiv.innerHTML = reporteHTML;
+            document.getElementById('reportesContainer').appendChild(reporteDiv);
+        });
+    }
+
+    // Limpiar datos de los reportes
+    function limpiarDatosReportes() {
+        localStorage.removeItem('reportes');
+        document.getElementById('reportesContainer').innerHTML = '';
+    }
+
+    // Función para reestablecer todos los datos
+    function reestablecerDatos() {
+        if (confirm('¿Estás seguro de que deseas reestablecer todos los datos? Esta acción no se puede deshacer.')) {
+            localStorage.clear();
+            location.reload();
+        }
+    }
+
+    // Cargar facturas y reportes al iniciar la página
+    window.onload = function() {
+        cargarFacturas();
+        cargarReportes();
+    };
+
+    // Cargar los reportes guardados
+    function cargarReportes() {
+        const reportesGuardados = JSON.parse(localStorage.getItem('reportes')) || [];
+        reportesGuardados.forEach(reporteHTML => {
+            const reporteDiv = document.createElement('div');
+            reporteDiv.className = 'reporte';
+            reporteDiv.innerHTML = reporteHTML;
+            document.getElementById('reportesContainer').appendChild(reporteDiv);
+        });
+    }
+
+    // Generar gráfico al abrir la pestaña de gráficos
+    function generarGrafico() {
+        const facturas = JSON.parse(localStorage.getItem('facturas')) || [];
+        const productos = facturas.map(f => f.producto);
+        const cantidades = facturas.map(f => f.cantidad);
+
+        const ctx = document.getElementById('ventasChart').getContext('2d');
+        new Chart(ctx, {
+            type: "bar",
+            data: {
+                labels: productos,
+                datasets: [{
+                    label: 'Cantidad Vendida',
+                    data: cantidades,
+                    backgroundColor: '#9fab6f',
+                    borderColor: '#9fab6e',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+    }
+
+    // Activar el gráfico cuando se abre la pestaña de gráficos
+    document.querySelector('.tablinks:nth-child(4)').addEventListener('click', generarGrafico);
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</body>
+</html>
