@@ -190,6 +190,7 @@
         <button class="tablinks" onclick="openTab(event, 'Facturacion')">Añadir Facturación</button>
         <button class="tablinks" onclick="openTab(event, 'Reportes')">Generar Reportes</button>
         <button class="tablinks" onclick="openTab(event, 'Graficos')">Gráficos</button>
+        <button class="tablinks" onclick="openTab(event, 'Productos')">Productos</button>
     </div>
 
     <!-- Contenido de la pestaña Informe -->
@@ -247,6 +248,78 @@
     </div>
 </div>
 
+<!-- Contenido de la pestaña Productos -->
+    <div id="Productos" class="tabcontent">
+        <h3>Productos Existentes</h3>
+
+        <table id="productosTable">
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Precio</th>
+                    <th>Cantidad</th>
+                    <th>Imagen</th>
+                </tr>
+            </thead>
+            <tbody>
+                    <td>Hotdog</td>
+                    <td>$1.25</td>
+                    <td>100</td>
+                    <td>
+                        <img src="hotdog.jpg" alt="image" width="80px" height="80px">
+                    </td>
+                <tr>
+                    <td>Fresco de Chan</td>
+                    <td>$0.50</td>
+                    <td>100</td>
+                    <td>
+                        <img src="chan.png" alt="image" width="80px" height="80px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Tanque</td>
+                    <td>$1</td>
+                    <td>100</td>
+                    <td>
+                        <img src="tanque.png" alt="image" width="80px" height="80px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Carrito</td>
+                    <td>$1</td>
+                    <td>100</td>
+                    <td>
+                        <img src="carrito.jpg" alt="image" width="115px" height="80px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Bombones</td>
+                    <td>$0.50</td>
+                    <td>100</td>
+                    <td>
+                        <img src="bom.jpg" alt="image" width="80px" height="120px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Cesta</td>
+                    <td>$1</td>
+                    <td>100</td>
+                    <td>
+                        <img src="cesta.png" alt="image" width="80px" height="80px">
+                    </td>
+                </tr>
+                <tr>
+                    <td>Organizador de lápices</td>
+                    <td>$1</td>
+                    <td>100</td>
+                    <td>
+                        <img src="lap.png" alt="image" width="80px" height="80px">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    
 <script>
     // Función para mostrar la pestaña seleccionada
     function openTab(evt, tabName) {
