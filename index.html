@@ -171,6 +171,11 @@
             margin: 20px 0;
         }
 
+        #gastosTable th, #gastosTable td {
+            text-align: left; /* Alinea el texto a la izquierda */
+            padding: 8px; /* Espaciado interno para mejor legibilidad */
+            border: 1px solid #ddd; /* Bordes opcionales */
+        }
     </style>
 </head>
 <body>
@@ -186,16 +191,17 @@
 
     <!-- Pestañas de navegación -->
     <div class="tab">
-        <button class="tablinks" onclick="openTab(event, 'Informe')" id="defaultOpen">Informe de Ventas</button>
+        <button class="tablinks" onclick="openTab(event, 'Informe')" id="defaultOpen">Facturas</button>
         <button class="tablinks" onclick="openTab(event, 'Facturacion')">Añadir Facturación</button>
         <button class="tablinks" onclick="openTab(event, 'Reportes')">Generar Reportes</button>
         <button class="tablinks" onclick="openTab(event, 'Graficos')">Gráficos</button>
         <button class="tablinks" onclick="openTab(event, 'Productos')">Productos</button>
+        <button class="tablinks" onclick="openTab(event, 'Gastos')">Gastos</button>
     </div>
 
-    <!-- Contenido de la pestaña Informe -->
+    <!-- Contenido de la pestaña Facturas -->
     <div id="Informe" class="tabcontent">
-        <h3>Informe de Ventas</h3>
+        <h3>Facturas </h3>
 
         <table id="ventasTable">
             <thead>
@@ -203,6 +209,7 @@
                     <th>Producto</th>
                     <th>Cantidad Vendida</th>
                     <th>Precio Unitario</th>
+                    <th>Nombre Cliente</th>
                     <th>Total</th>
                 </tr>
             </thead>
@@ -223,6 +230,7 @@
             <input type="text" id="producto" placeholder="Nombre del Producto" required />
             <input type="number" id="cantidad" placeholder="Cantidad Vendida" required />
             <input type="number" id="precio" placeholder="Precio Unitario" required />
+            <input type="text" id="nombrecliente" placeholder="Nombre Cliente" required />
             <button onclick="agregarFactura()">Guardar Datos</button>
         </div>
     </div>
@@ -239,7 +247,7 @@
         </div>
     </div>
 
-<!-- Contenido de la pestaña Productos -->
+    <!-- Contenido de la pestaña Productos -->
     <div id="Productos" class="tabcontent">
         <h3>Productos Existentes</h3>
 
@@ -277,10 +285,10 @@
                 </tr>
                 <tr>
                     <td>Carrito</td>
-                    <td>$1</td>
+                    <td>$1.50</td>
                     <td>100</td>
                     <td>
-                        <img src="carrito.jpg" alt="image" width="115px" height="80px">
+                        <img src="carrito.png" alt="image" width="115px" height="80px">
                     </td>
                 </tr>
                 <tr>
@@ -310,7 +318,44 @@
             </tbody>
         </table>
     </div>
-    
+
+<!-- Contenido de la pestaña Gastos -->
+<div id="Gastos" class="tabcontent">
+    <h3>Gastos</h3>
+
+    <table id="gastosTable">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Cantidad (Día)</th>
+            </tr>
+        </thead>
+        <tbody>
+                <td>Salarios</td>
+                <td>$20</td>
+            <tr>
+                <td>Local</td>
+                <td>$10</td>
+            </tr>
+            <tr>
+                <td>Ingredientes</td>
+                <td>$15</td>
+            </tr>
+            <tr>
+                <td>Materiales</td>
+                <td>$5</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div id="totalGastos">
+        <strong>Total: $0</strong>
+    </div>
+    <br>
+    <strong>Ganancias: +$250</strong>
+
+</div>
+
     <!-- Contenido de la pestaña Gráficos -->
     <div id="Graficos" class="tabcontent">
         <h3>Gráfico de Ventas</h3>
@@ -319,7 +364,7 @@
         </div>
     </div>
 </div>
-    
+
 <script>
     // Función para mostrar la pestaña seleccionada
     function openTab(evt, tabName) {
@@ -340,26 +385,29 @@
 
     // Función para agregar facturas
     function agregarFactura() {
-        const producto = document.getElementById('producto').value;
-        const cantidad = parseInt(document.getElementById('cantidad').value);
-        const precio = parseFloat(document.getElementById('precio').value);
-        const total = (cantidad * precio).toFixed(2);
+    const producto = document.getElementById('producto').value;
+    const cantidad = parseInt(document.getElementById('cantidad').value);
+    const precio = parseFloat(document.getElementById('precio').value);
+    const nombrecliente = document.getElementById('nombrecliente').value; // Cambiado de parseInt a solo obtener el valor
+    const total = (cantidad * precio).toFixed(2);
 
-        if (!producto || isNaN(cantidad) || isNaN(precio)) {
-            alert('Por favor, completa todos los campos.');
-            return;
-        }
-
-        const factura = { producto, cantidad, precio, total };
-        let facturas = JSON.parse(localStorage.getItem('facturas')) || [];
-        facturas.push(factura);
-        localStorage.setItem('facturas', JSON.stringify(facturas));
-
-        cargarFacturas();
-        document.getElementById('producto').value = '';
-        document.getElementById('cantidad').value = '';
-        document.getElementById('precio').value = '';
+    if (!producto || isNaN(cantidad) || isNaN(precio) || !nombrecliente) {
+        alert('Por favor, completa todos los campos.');
+        return;
     }
+
+    const factura = { producto, cantidad, precio, nombrecliente, total };
+    let facturas = JSON.parse(localStorage.getItem('facturas')) || [];
+    facturas.push(factura);
+    localStorage.setItem('facturas', JSON.stringify(facturas));
+
+    cargarFacturas();
+    document.getElementById('producto').value = '';
+    document.getElementById('cantidad').value = '';
+    document.getElementById('precio').value = '';
+    document.getElementById('nombrecliente').value = '';
+}
+
 
     // Cargar las facturas en la tabla
     function cargarFacturas() {
@@ -375,6 +423,7 @@
                     <td>${factura.producto}</td>
                     <td>${factura.cantidad}</td>
                     <td>$${factura.precio.toFixed(2)}</td>
+                    <td>${factura.nombrecliente}</td>
                     <td>$${factura.total}</td>
                 </tr>
             `;
@@ -392,50 +441,53 @@
     }
 
     // Generar un reporte y guardarlo en localStorage
-    function generarReporte() {
-        const facturas = JSON.parse(localStorage.getItem('facturas')) || [];
-        const totalGeneral = document.getElementById('totalGeneral').textContent;
+function generarReporte() {
+    const facturas = JSON.parse(localStorage.getItem('facturas')) || [];
+    const totalGeneral = document.getElementById('totalGeneral').textContent;
 
-        if (facturas.length === 0) {
-            alert("No hay datos para generar el reporte.");
-            return;
-        }
-
-        const reporteDiv = document.createElement('div');
-        reporteDiv.className = 'reporte';
-        const fecha = new Date().toLocaleString();
-        reporteDiv.innerHTML = `
-            <h4>Reporte generado el: ${fecha}</h4>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th>Cantidad Vendida</th>
-                        <th>Precio Unitario</th>
-                        <th>Total</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${facturas.map(factura => `
-                        <tr>
-                            <td>${factura.producto}</td>
-                            <td>${factura.cantidad}</td>
-                            <td>$${factura.precio.toFixed(2)}</td>
-                            <td>$${factura.total}</td>
-                        </tr>
-                    `).join('')}
-                </tbody>
-            </table>
-            <p><strong>Total General:</strong> $${totalGeneral}</p>
-        `;
-
-        // Guardar el reporte en localStorage
-        let reportesGuardados = JSON.parse(localStorage.getItem('reportes')) || [];
-        reportesGuardados.push(reporteDiv.innerHTML);
-        localStorage.setItem('reportes', JSON.stringify(reportesGuardados));
-
-        document.getElementById('reportesContainer').appendChild(reporteDiv);
+    if (facturas.length === 0) {
+        alert("No hay datos para generar el reporte.");
+        return;
     }
+
+    const reporteDiv = document.createElement('div');
+    reporteDiv.className = 'reporte';
+    const fecha = new Date().toLocaleString();
+    reporteDiv.innerHTML = `
+        <h4>Reporte generado el: ${fecha}</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>Producto</th>
+                    <th>Cantidad Vendida</th>
+                    <th>Precio Unitario</th>
+                    <th>Nombre Cliente</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${facturas.map(factura => `
+                    <tr>
+                        <td>${factura.producto}</td>
+                        <td>${factura.cantidad}</td>
+                        <td>$${factura.precio.toFixed(2)}</td>
+                        <td>${factura.nombrecliente}</td> <!-- Nuevo campo de nombre del cliente -->
+                        <td>$${factura.total}</td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+        <p><strong>Total General:</strong> $${totalGeneral}</p>
+    `;
+
+    // Guardar el reporte en localStorage
+    let reportesGuardados = JSON.parse(localStorage.getItem('reportes')) || [];
+    reportesGuardados.push(reporteDiv.innerHTML);
+    localStorage.setItem('reportes', JSON.stringify(reportesGuardados));
+
+    document.getElementById('reportesContainer').appendChild(reporteDiv);
+}
+
     
     function limpiarDatosReportes() {
         document.getElementById('reportesContainer').innerHTML = '';
@@ -515,6 +567,25 @@
 
     // Activar el gráfico cuando se abre la pestaña de gráficos
     document.querySelector('.tablinks:nth-child(4)').addEventListener('click', generarGrafico);
+
+    // Función para calcular el total de los gastos
+function calcularTotal() {
+    // Selecciona todas las celdas de la columna de cantidades
+    const celdas = document.querySelectorAll('#gastosTable tbody tr td:nth-child(2)');
+    let total = 0;
+
+    // Sumar cada cantidad
+    celdas.forEach(celda => {
+        const cantidad = parseFloat(celda.textContent.replace('$', '')); // Eliminar el símbolo '$' y convertir a número
+        total += cantidad; // Sumar al total
+    });
+
+    // Mostrar el total en el div correspondiente
+    document.getElementById('totalGastos').innerHTML = `<strong>Total: $${total}</strong>`;
+}
+
+// Llamar a la función para calcular el total al cargar la página
+calcularTotal();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
